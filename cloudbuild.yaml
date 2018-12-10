@@ -1,13 +1,18 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build','-t', 'carlosgomezpag/demo-cloud-builder', '.']
-  timeout: 500s
+  args: ["build", "-t", "gcr.io/test/test-image:$REVISION_ID", "."]
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['login','-u', 'carlosgomezpag', '-p', 'nhcdocker@pag']
-  timeout: 500s
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'carlosgomezpag/demo-cloud-builder']
+  args: ["push", "gcr.io/test/test-image:$REVISION_ID"]
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+  - 'set'
+  - 'image'
+  - 'deployment/my-deployment'
+  - 'my-container=gcr.io/test/test-image:$REVISION_ID'
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
   - 'CLOUDSDK_CONTAINER_CLUSTER=coyotewell'
 timeout: 660s
+
+
+
